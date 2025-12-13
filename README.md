@@ -1,4 +1,4 @@
-# ClintUX
+# ClintUX | System Version: v2.4.1
 
 The ultimate centralized management interface for server infrastructure, Docker containers, and self-hosted applications. Built for simplicity, security, and premium aesthetics.
 
@@ -42,21 +42,21 @@ To ensure maximum security for this private dashboard:
 
 ClintUX is engineered for maximum speed and stability, leveraging enterprise-grade optimization techniques:
 
-### 🚀 PHP Opcache
+### PHP Opcache
 
 We enabled the PHP OPcache extension in our Docker environment.
 
 -   **What it does**: Stores precompiled script bytecode in shared memory, removing the need for PHP to load and parse scripts on every request.
 -   **Impact**: drastically reduces CPU usage and response time for complex pages (up to 3x faster).
 
-### 📦 Gzip Compression
+### Gzip Compression
 
 Nginx is configured to serve compressed assets automatically.
 
 -   **Configuration**: Aggressive compression level 6 for text, JSON, CSS, and JavaScript.
 -   **Impact**: Reduces bandwidth consumption by 70-80%, ensuring near-instant page loads even on slower networks.
 
-### 🛡️ Docker Stability
+### Docker Stability
 
 -   **Base Image**: Built on `php:8.3-fpm` (Debian-based) for maximum compatibility and robustness.
 -   **Restart Policies**: Containers are set to `restart: unless-stopped`, ensuring high availability and automatic recovery after system reboots.
@@ -120,17 +120,17 @@ The project is designed to be "Clone & Run".
 
 ## Troubleshooting & FAQ
 
-### ❌ "The page isn’t redirecting properly" (Redirect Loop)
+### The page isn’t redirecting properly (Redirect Loop)
 
 **Cause**: Earlier versions had a conflict between the root path `/` and authentication middleware.
 **Solution**: This was fixed in `v2.4.1` by explicitly configuring `bootstrap/app.php` to redirect authenticated users to `/clintux`. If you see this, clear your browser cookies for localhost.
 
-### ❓ "Docker permission denied"
+### Docker permission denied
 
 **Cause**: The user running the app inside the container usually maps to `www-data`.
 **Solution**: The `docker-compose.yml` mounts the Docker socket (`/var/run/docker.sock`). Ensure your host user has permissions to run docker commands, or usage of `sudo` might be implicitly handled by the Python bridge simulation if running locally on Windows (Laragon).
 
-### 🎨 "Styles look broken or generic"
+### Styles look broken or generic
 
 **Cause**: TailwindCSS build might not have run or cache is stale.
 **Solution**: The Docker build process includes the necessary asset compilation. Try forcing a rebuild with `docker compose build --no-cache`.
