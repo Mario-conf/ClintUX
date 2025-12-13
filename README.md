@@ -1,88 +1,106 @@
-# Laravel Dashboard 🚀
+# ClintUX
 
-A premium, modern Dashboard for managing your home server, built with **Laravel 11** and **Tailwind CSS**.
+The ultimate centralized management interface for server infrastructure, Docker containers, and self-hosted applications. Built for simplicity, security, and premium aesthetics.
 
-![Dashboard Preview](https://via.placeholder.com/800x400?text=Dashboard+Preview)
+![ClintUX Cover](public/img/cover-clintux.jpg)
 
-## ✨ Features
+## Table of Contents
 
--   **System Monitoring**: Real-time stats for CPU, Memory, Disk, Network, and Uptime (via Python integration).
+1.  [Features](#features)
+2.  [Technology Stack](#technology-stack)
+3.  [Architecture Overview](#architecture-overview)
+4.  [Customization](#customization)
+5.  [Installation & Execution](#installation--execution)
+6.  [Credits](#credits)
+
+---
+
+## Features
+
+-   **Real-Time Monitoring**: Live visualization of CPU, RAM, Disk, and Network usage using efficient Python bridges.
 -   **Docker Management**:
-    -   List running containers.
-    -   Start / Stop / Restart containers.
-    -   **Portainer-like Creation Form**: Deploy new containers with ease (Image, Name, Ports, Restart Policy).
--   **App Launcher**: Manage and launch your self-hosted applications / internal tools.
--   **Secure Proxy**: Built-in reverse proxy to access internal apps securely.
--   **Role-Based Access Control (RBAC)**:
-    -   **Admin**: Full access (System Control, Docker, App Management).
-    -   **Dev**: Docker Management access.
-    -   **User**: View-only access to allowed apps.
--   **Modern UI**: Fully responsive, Dark Mode support, Glassmorphism design.
+    -   List running/stopped containers.
+    -   Start, Stop, and Restart actions directly from the UI.
+    -   Create new lightweight containers (e.g., Nginx, Alpine).
+-   **Application Hub**: Centralized launcher for all your self-hosted apps (Plex, Portainer, Pi-hole, etc.) with reverse proxy support.
+-   **Secure Authentication**: Role-based access control (Admin/User), audit logging, and brutal-force protection.
+-   **Persistent Dark Mode**: Adaptive UI that respects user preference across sessions and devices.
+-   **Responsive Design**: Mobile-first glassmorphism interface built with TailwindCSS.
 
-## 🛠 Requirements
+## Technology Stack
 
--   PHP 8.2+
--   Composer
--   Node.js & NPM
--   Python 3 (for system stats & docker control)
-    -   `pip install psutil docker`
--   SQLite (default) or MySQL
+-   **Backend**: Laravel 11 (PHP 8.2+)
+-   **Frontend**: Blade Templates, TailwindCSS, Alpine.js (Lightweight interactivity)
+-   **System Integration**: Python 3 scripts (for hardware stats & Docker CLI interaction)
+-   **Database**: SQLite (Default) or MySQL/MariaDB
+-   **Containerization**: Docker & Docker Compose
 
-## 🚀 Installation
+## Architecture Overview
 
-1. **Clone the repository**
+ClintUX follows a **Model-View-Controller (MVC)** pattern with a specialized "Bridge" layer:
+
+1.  **Frontend (Blade/Alpine)**: Renders the UI and polls the backend for live data.
+2.  **Laravel Backend**: Handles auth, routing, and business logic.
+3.  **Python Bridge**:
+    -   Laravel executes Python scripts via `Process`.
+    -   Python scripts interacts with the Host OS (via `psutil` or `docker-py`) to fetch privileged data.
+    -   Data is returned as JSON to Laravel for display.
+
+This decoupled approach ensures the web server stays lightweight while accessing low-level system metrics securely.
+
+## Customization
+
+You can customize the dashboard by editing the `.env` file after installation:
+
+| Parameter     | Description                            | Default             |
+| :------------ | :------------------------------------- | :------------------ |
+| `APP_NAME`    | The name displayed in the header/title | "ClintUX"           |
+| `APP_DOMAIN`  | Domain shown in the admin panel        | "myserver.com"      |
+| `ADMIN_EMAIL` | Default admin email for seeding        | "admin@example.com" |
+
+## Installation & Execution
+
+The project is designed to be "Clone & Run".
+
+### Prerequisites
+
+-   **Docker** and **Docker Compose** installed on the host machine.
+
+### Quick Start
+
+1.  **Clone the Repository**
 
     ```bash
-    git clone https://github.com/yourusername/dashboard.git
+    git clone https://github.com/Mario-conf/dashboard.git
     cd dashboard
     ```
 
-2. **Install Dependencies**
+2.  **Launch with Docker Compose**
 
     ```bash
-    composer install
-    npm install && npm run build
+    docker-compose up -d --build
     ```
 
-3. **Environment Setup**
+    _The system will automatically:_
 
-    ```bash
-    cp .env.example .env
-    php artisan key:generate
-    ```
+    -   Build the containers.
+    -   Install PHP/Python dependencies.
+    -   Setup the database and run migrations.
+    -   Serve the app at `http://localhost:8000`.
 
-    _Edit `.env` and set your domain:_
+3.  **Access ClintUX**
+    -   **URL**: `http://localhost:8000`
+    -   **Default Login**:
+        -   Email: `admin@example.com`
+        -   Password: `password`
 
-    ```env
-    APP_DOMAIN=myserver.com
-    ```
+---
 
-4. **Database Setup**
+## Credits
 
-    ```bash
-    touch database/database.sqlite
-    php artisan migrate --seed
-    ```
+-   **Author & Developer**: [Mario.conf](https://github.com/Mario-conf)
+-   **Cover Art**: Custom Abstract 3D Design by Mario.conf
 
-    _(The seeder creates a default Admin user: `admin@example.com` / `password`)_
+## License
 
-5. **Python Dependencies**
-   Ensure Python is discoverable in your path.
-
-    ```bash
-    pip install psutil docker
-    ```
-
-6. **Run the Server**
-    ```bash
-    php artisan serve
-    ```
-
-## 🔒 Security
-
--   **Sensitive Data**: This project uses standard Laravel `.env` for secrets. **NEVER** commit your `.env` file.
--   **Python Scripts**: The scripts in `server_scripts/` run system commands. Ensure the user running the PHP process has appropriate permissions (Docker group, etc.).
-
-## 📝 License
-
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The MIT License (MIT).
