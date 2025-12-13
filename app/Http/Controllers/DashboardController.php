@@ -21,6 +21,9 @@ class DashboardController extends Controller
     {
         $stats = $this->health->getStats();
         $containers = $this->docker->listContainers();
+        if (isset($containers['error'])) {
+            $containers = [];
+        }
 
         // Get apps visible to user
         $user = auth()->user();

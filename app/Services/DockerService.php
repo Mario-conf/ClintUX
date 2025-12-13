@@ -14,7 +14,7 @@ class DockerService
     public function listContainers(): array
     {
         try {
-            return $this->bridge->run('docker_manager.py');
+            return $this->bridge->run('docker_manager.py', ['list']);
         } catch (\Exception $e) {
             return [
                 'error' => true,

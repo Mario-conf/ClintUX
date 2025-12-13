@@ -160,78 +160,118 @@
             </div>
 
             <!-- Containers List -->
-            @else
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-gray-700">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Image</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Controls</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($containers as $container)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 font-mono">
-                                {{ $container['id'] ?? 'N/A' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                {{ $container['name'] ?? 'Unknown' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                {{ $container['image'] ?? 'Unknown' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                    {{ ($container['status'] ?? '') == 'running' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
-                                    {{ $container['status'] ?? 'Unknown' }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                @if(auth()->user()->isAdmin() || auth()->user()->hasRole('dev'))
-                                <div class="flex justify-end space-x-2">
-                                    @if(($container['status'] ?? '') == 'running')
-                                    <form action="{{ route('docker.action', ['id' => $container['id'], 'action' => 'restart']) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="text-orange-500 hover:text-orange-900" title="Restart">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('docker.action', ['id' => $container['id'], 'action' => 'stop']) }}" method="POST" class="inline" onsubmit="return confirm('Stop container?');">
-                                        @csrf
-                                        <button type="submit" class="text-red-600 hover:text-red-900" title="Stop">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-9z" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                    @else
-                                    <form action="{{ route('docker.action', ['id' => $container['id'], 'action' => 'start']) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="text-green-600 hover:text-green-900" title="Start">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                    @endif
-                                </div>
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            @endif
-        </div>
-    </div>
 
-    </div>
+            <!-- Docker Containers Card -->
+            <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                    <h3 class="text-lg font-bold">Docker Containers</h3>
+                    @if(auth()->user()->isAdmin() || auth()->user()->hasRole('dev'))
+                    <button x-data="" x-on:click="$dispatch('open-modal', 'create-container')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">
+                        + Create Container
+                    </button>
+                    @endif
+                </div>
+
+                <x-modal name="create-container" :show="false" focusable>
+                    <form method="post" action="{{ route('docker.store') }}" class="p-6">
+                        @csrf
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Create New Container</h2>
+
+                        <div class="mt-4">
+                            <x-input-label for="docker_image" value="Image (e.g. nginx:latest)" />
+                            <x-text-input id="docker_image" name="image" type="text" class="mt-1 block w-full" placeholder="nginx:latest" required />
+                        </div>
+
+                        <div class="mt-4">
+                            <x-input-label for="docker_name" value="Container Name (Optional)" />
+                            <x-text-input id="docker_name" name="name" type="text" class="mt-1 block w-full" placeholder="my-app" />
+                        </div>
+
+                        <div class="mt-4">
+                            <x-input-label for="docker_ports" value="Port Mapping (Host:Container)" />
+                            <x-text-input id="docker_ports" name="ports" type="text" class="mt-1 block w-full" placeholder="8080:80" />
+                            <p class="text-xs text-gray-500 mt-1">Leave empty for no exposed ports.</p>
+                        </div>
+
+                        <div class="mt-6 flex justify-end">
+                            <x-secondary-button x-on:click="$dispatch('close')">Cancel</x-secondary-button>
+                            <x-primary-button class="ml-3">Create</x-primary-button>
+                        </div>
+                    </form>
+                </x-modal>
+
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-700">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Image</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Controls</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                @foreach($containers as $container)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 font-mono">
+                                        {{ $container['id'] ?? 'N/A' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ $container['name'] ?? 'Unknown' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                        {{ $container['image'] ?? 'Unknown' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                    {{ ($container['status'] ?? '') == 'running' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
+                                            {{ $container['status'] ?? 'Unknown' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        @if(auth()->user()->isAdmin() || auth()->user()->hasRole('dev'))
+                                        <div class="flex justify-end space-x-2">
+                                            @if(($container['status'] ?? '') == 'running')
+                                            <form action="{{ route('docker.action', ['id' => $container['id'], 'action' => 'restart']) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="text-orange-500 hover:text-orange-900" title="Restart">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('docker.action', ['id' => $container['id'], 'action' => 'stop']) }}" method="POST" class="inline" onsubmit="return confirm('Stop container?');">
+                                                @csrf
+                                                <button type="submit" class="text-red-600 hover:text-red-900" title="Stop">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-9z" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                            @else
+                                            <form action="{{ route('docker.action', ['id' => $container['id'], 'action' => 'start']) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="text-green-600 hover:text-green-900" title="Start">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                            @endif
+                                        </div>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     </div>
 </x-app-layout>
