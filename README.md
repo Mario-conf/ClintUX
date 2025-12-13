@@ -140,12 +140,11 @@ The project is designed to be "Clone & Run".
 ## Developer Contact
 
 <div align="center">
-  <img src="https://via.placeholder.com/150" alt="Mario Acosta Vargas" style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover; border: 4px solid #FF5100;">
-  
-  <h3>Mario Acosta Vargas</h3>
+
+  <h3>Mario Conf</h3>
   <p><strong>SysAdmin & Full Stack Developer</strong></p>
   
-  <p>
+<p>
     <a href="mailto:mario04asir@gmail.com">
       <img src="https://img.shields.io/badge/Email-mario04asir%40gmail.com-red?style=flat&logo=gmail" alt="Email">
     </a>
