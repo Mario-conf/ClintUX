@@ -29,7 +29,21 @@
 
             <!-- System Status Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Power Controls (Admin Only) -->
+                <!-- Server Info (Admin Only) -->
+                @if(auth()->user()->isAdmin())
+                <div class="md:col-span-3 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-4 flex justify-between items-center text-sm">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-500 dark:text-gray-400 font-bold">Server IPs:</span>
+                        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200 font-mono">Local: {{ $stats['local_ip'] ?? 'N/A' }}</span>
+                        <span class="bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded text-blue-800 dark:text-blue-200 font-mono">Public: {{ $stats['public_ip'] ?? 'N/A' }}</span>
+                    </div>
+                    <div class="text-gray-500 dark:text-gray-400">
+                        Uptime: {{ \Carbon\Carbon::createFromTimestamp($stats['boot_time'])->diffForHumans(null, true) }}
+                    </div>
+                </div>
+                @endif
+
+                <!-- Power Controls (Admin Only - Moved below info) -->
                 @if(auth()->user()->isAdmin())
                 <div class="md:col-span-3 flex justify-end space-x-4">
                     <button x-data="" x-on:click="$dispatch('open-modal', 'confirm-reboot')"
@@ -85,22 +99,63 @@
                     </div>
                 </div>
 
-                <!-- RAM -->
+                <!-- Memory -->
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <div class="text-gray-500 dark:text-gray-400 text-sm uppercase font-bold tracking-wider mb-2">Memory</div>
-                    <div class="flex items-end items-baseline">
-                        <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ $stats['memory_percent'] ?? 0 }}</span>
-                        <span class="text-xl text-gray-500 dark:text-gray-400 ml-1">%</span>
+                    <div class="text-gray-500 dark:text-gray-400 text-sm uppercase font-bold tracking-wider mb-2">Memory Usage</div>
+                    <div class="flex items-center">
+                        <div class="text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $stats['memory_percent'] }}%</div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-4">
+                        <div class="bg-purple-600 h-2.5 rounded-full" style="width: {{ $stats['memory_percent'] }}%"></div>
                     </div>
                 </div>
 
                 <!-- Disk -->
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <div class="text-gray-500 dark:text-gray-400 text-sm uppercase font-bold tracking-wider mb-2">Disk</div>
-                    <div class="flex items-end items-baseline">
-                        <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ $stats['disk_percent'] ?? 0 }}</span>
-                        <span class="text-xl text-gray-500 dark:text-gray-400 ml-1">%</span>
+                    <div class="text-gray-500 dark:text-gray-400 text-sm uppercase font-bold tracking-wider mb-2">Disk Usage</div>
+                    <div class="flex items-center">
+                        <div class="text-3xl font-bold text-gray-900 dark:text-gray-100">{{ $stats['disk_percent'] }}%</div>
                     </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-4">
+                        <div class="bg-indigo-600 h-2.5 rounded-full" style="width: {{ $stats['disk_percent'] }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Network -->
+                <div class="md:col-span-3 grid grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <div class="text-gray-500 dark:text-gray-400 text-sm uppercase font-bold tracking-wider mb-2">Network Sent</div>
+                        <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ number_format(($stats['net_sent'] ?? 0) / 1024 / 1024, 2) }} MB</div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <div class="text-gray-500 dark:text-gray-400 text-sm uppercase font-bold tracking-wider mb-2">Network Recv</div>
+                        <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ number_format(($stats['net_recv'] ?? 0) / 1024 / 1024, 2) }} MB</div>
+                    </div>
+                </div>
+
+                <!-- Top Processes -->
+                <div class="md:col-span-3 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Top Processes (by CPU)</h3>
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CPU %</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MEM %</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @foreach($stats['processes'] ?? [] as $proc)
+                            <tr>
+                                <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500 font-mono">{{ $proc['pid'] }}</td>
+                                <td class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ $proc['name'] }}</td>
+                                <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{{ $proc['cpu_percent'] }}%</td>
+                                <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{{ number_format($proc['memory_percent'], 1) }}%</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

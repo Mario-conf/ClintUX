@@ -21,7 +21,13 @@ class SystemHealth
                 'message' => $e->getMessage(),
                 'cpu_percent' => 0,
                 'memory_percent' => 0,
-                'disk_percent' => 0
+                'disk_percent' => 0,
+                'net_sent' => 0,
+                'net_recv' => 0,
+                'processes' => [],
+                'local_ip' => 'N/A',
+                'public_ip' => 'N/A',
+                'boot_time' => 0
             ];
         }
     }
