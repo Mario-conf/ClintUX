@@ -20,6 +20,10 @@
                     <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                         {{ __('Users') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('admin.apps.index')" :active="request()->routeIs('admin.apps.*')">
+                        {{ __('Apps') }}
+                    </x-nav-link>
                     @endif
                 </div>
             </div>
