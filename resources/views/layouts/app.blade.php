@@ -67,10 +67,10 @@
             <div class="flex items-center gap-8">
                 <nav class="hidden md:flex items-center gap-6">
                     <a class="text-[#181811] dark:text-white text-sm font-bold leading-normal border-b-2 border-primary py-1" href="{{ route('dashboard') }}">Dashboard</a>
-                    @role('admin')
+                    @if(Auth::user()->isAdmin())
                     <a class="text-[#181811] dark:text-[#a0a090] text-sm font-medium leading-normal hover:text-primary transition-colors" href="{{ route('admin.apps.index') }}">Apps</a>
                     <a class="text-[#181811] dark:text-[#a0a090] text-sm font-medium leading-normal hover:text-primary transition-colors" href="{{ route('admin.audits.index') }}">Logs</a>
-                    @endrole
+                    @endif
                 </nav>
                 <div class="flex items-center gap-3">
                     <div class="text-right hidden sm:block">
