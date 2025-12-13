@@ -1,0 +1,32 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dashboard-app
+    container_name: dashboard-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - dashboard-network
+
+  web:
+    image: nginx:alpine
+    container_name: dashboard-web
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - dashboard-network
+    depends_on:
+      - app
+
+networks:
+  dashboard-network:
+    driver: bridge
