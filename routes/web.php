@@ -18,6 +18,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::resource('apps', \App\Http\Controllers\Admin\AppController::class);
+        Route::get('audits', [\App\Http\Controllers\Admin\AuditController::class, 'index'])->name('audits.index');
     });
 
     // Proxy Routes
