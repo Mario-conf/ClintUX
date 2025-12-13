@@ -27,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('apps.proxy');
 
     // Docker Routes
+    Route::post('/docker/create', [\App\Http\Controllers\DockerController::class, 'store'])->name('docker.store');
     Route::post('/docker/{id}/{action}', [\App\Http\Controllers\DockerController::class, 'action'])
         ->name('docker.action');
 

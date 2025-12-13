@@ -35,7 +35,7 @@
                     <div class="flex items-center space-x-4">
                         <span class="text-gray-500 dark:text-gray-400 font-bold">Server IPs:</span>
                         <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200 font-mono">Local: {{ $stats['local_ip'] ?? 'N/A' }}</span>
-                        <span class="bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded text-blue-800 dark:text-blue-200 font-mono">Public: {{ $stats['public_ip'] ?? 'N/A' }}</span>
+                        <span class="bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded text-blue-800 dark:text-blue-200 font-bold">Domain: {{ env('APP_DOMAIN', $stats['public_ip'] ?? 'N/A') }}</span>
                     </div>
                     <div class="text-gray-500 dark:text-gray-400">
                         Uptime: {{ \Carbon\Carbon::createFromTimestamp($stats['boot_time'])->diffForHumans(null, true) }}

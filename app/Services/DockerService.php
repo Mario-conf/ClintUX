@@ -35,4 +35,23 @@ class DockerService
             ];
         }
     }
+
+    public function create(string $image, string $name = null, string $ports = null): array
+    {
+        try {
+            // "image" "name" "ports"
+            $args = [
+                'create',
+                $image,
+                $name ?: '_',
+                $ports ?: '_'
+            ];
+            return $this->bridge->run('docker_manager.py', $args);
+        } catch (\Exception $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }
