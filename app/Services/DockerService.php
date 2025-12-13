@@ -23,4 +23,16 @@ class DockerService
             ];
         }
     }
+
+    public function manage(string $id, string $action): array
+    {
+        try {
+            return $this->bridge->run('docker_manager.py', [$action, $id]);
+        } catch (\Exception $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }

@@ -25,6 +25,10 @@ Route::middleware(['auth'])->group(function () {
         ->where('path', '.*')
         ->name('apps.proxy');
 
+    // Docker Routes
+    Route::post('/docker/{id}/{action}', [\App\Http\Controllers\DockerController::class, 'action'])
+        ->name('docker.action');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
