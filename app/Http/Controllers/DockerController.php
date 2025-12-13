@@ -32,6 +32,8 @@ class DockerController extends Controller
             return back()->with('error', 'Docker Error: ' . $result['message']);
         }
 
+        \App\Services\AuditLogger::log("docker.{$action}", "Container: {$id}");
+
         return back()->with('success', $result['message'] ?? 'Action completed.');
     }
 }
