@@ -8,6 +8,25 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+            <!-- Applications Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                @foreach($apps as $app)
+                <a href="{{ route('apps.proxy', ['slug' => $app->slug]) }}" target="_blank" class="block bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow duration-200">
+                    <div class="p-4 text-center">
+                        <div class="h-12 w-12 mx-auto bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-2 text-2xl">
+                            @if($app->icon)
+                            <i class="{{ $app->icon }}"></i>
+                            @else
+                            <span>{{ substr($app->name, 0, 1) }}</span>
+                            @endif
+                        </div>
+                        <h3 class="font-bold text-gray-900 dark:text-white truncate">{{ $app->name }}</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $app->description }}</p>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+
             <!-- System Status Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- CPU -->

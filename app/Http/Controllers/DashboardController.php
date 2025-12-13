@@ -22,6 +22,19 @@ class DashboardController extends Controller
         $stats = $this->health->getStats();
         $containers = $this->docker->listContainers();
 
-        return view('dashboard.index', compact('stats', 'containers'));
+        // Get apps visible to user
+        $user = auth()->user();
+        $apps = \App\Models\App::where('active', true)
+            ->where(function ($query) use ($user) {
+                $query->whereNull('role_id')
+                    ->orWhere('role_id', $user->role_id);
+                // If user is admin, show all? Or stick to role?
+                if ($user->isAdmin()) {
+                    $query->orWhereNotNull('role_id');
+                }
+            })
+            ->get();
+
+        return view('dashboard.index', compact('stats', 'containers', 'apps'));
     }
 }
