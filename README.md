@@ -2,7 +2,7 @@
 
 The ultimate centralized management interface for server infrastructure, Docker containers, and self-hosted applications. Built for simplicity, security, and premium aesthetics.
 
-![ClintUX Cover](public/img/cover-clintux.jpg)
+![ClintUX Cover](public/img/login-bg.png)
 
 ## Table of Contents
 
@@ -29,6 +29,14 @@ The ultimate centralized management interface for server infrastructure, Docker 
     -   **Glassmorphism Layout**: Modern aesthetic with blur effects and transparency.
     -   **Persistent Dark Mode**: Adapts to user preference and saves state across sessions.
     -   **Spline Sans Typography**: Clean, modern readability.
+
+## Security & User Management
+
+To ensure maximum security for this private dashboard:
+
+-   **Public Registration Disabled**: The `/register` route has been deactivated. New users can ONLY be created by an Admin from the "Users" panel.
+-   **Manual Recovery**: The "Forgot Password" feature is disabled to prevent enumeration attacks. Password resets must be performed by an Admin.
+-   **Search Engine Block**: `robots.txt` is configured to disallow all indexing (`User-agent: * Disallow: /`).
 
 ## Performance & Optimization
 
