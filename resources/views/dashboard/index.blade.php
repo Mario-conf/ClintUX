@@ -175,27 +175,112 @@
                 <x-modal name="create-container" :show="false" focusable>
                     <form method="post" action="{{ route('docker.store') }}" class="p-6">
                         @csrf
-                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Create New Container</h2>
-
-                        <div class="mt-4">
-                            <x-input-label for="docker_image" value="Image (e.g. nginx:latest)" />
-                            <x-text-input id="docker_image" name="image" type="text" class="mt-1 block w-full" placeholder="nginx:latest" required />
+                        <div class="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                                </svg>
+                                Create container
+                            </h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Configure and deploy a new Docker instance.</p>
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="docker_name" value="Container Name (Optional)" />
-                            <x-text-input id="docker_name" name="name" type="text" class="mt-1 block w-full" placeholder="my-app" />
+                        <!-- Name & Image -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="col-span-1">
+                                <x-input-label for="docker_image" value="Image *" class="font-bold uppercase text-xs tracking-wider" />
+                                <x-text-input id="docker_image" name="image" type="text" class="mt-1 block w-full bg-gray-50 dark:bg-gray-900 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. nginx:latest" required />
+                                <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    DockerHub Registry (default)
+                                </p>
+                            </div>
+                            <div class="col-span-1">
+                                <x-input-label for="docker_name" value="Name (Optional)" class="font-bold uppercase text-xs tracking-wider" />
+                                <x-text-input id="docker_name" name="name" type="text" class="mt-1 block w-full bg-gray-50 dark:bg-gray-900 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. my-app-01" />
+                                <p class="text-xs text-gray-500 mt-1">Random name if empty.</p>
+                            </div>
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="docker_ports" value="Port Mapping (Host:Container)" />
-                            <x-text-input id="docker_ports" name="ports" type="text" class="mt-1 block w-full" placeholder="8080:80" />
-                            <p class="text-xs text-gray-500 mt-1">Leave empty for no exposed ports.</p>
+                        <!-- Network Ports -->
+                        <div class="mt-6 border dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900/40">
+                            <h3 class="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-3 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                                </svg>
+                                Port Mapping
+                            </h3>
+                            <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+                                <div class="w-full sm:flex-1">
+                                    <x-input-label for="docker_ports" value="Host Port:Container Port" class="text-xs mb-1 sr-only" />
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 sm:text-sm">🔗</span>
+                                        </div>
+                                        <x-text-input id="docker_ports" name="ports" type="text" class="pl-8 block w-full font-mono text-sm border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500" placeholder="8080:80" />
+                                    </div>
+                                </div>
+                                <div class="text-gray-400 hidden sm:block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                                    </svg>
+                                </div>
+                                <div class="w-full sm:w-auto">
+                                    <div class="w-full py-2 px-4 bg-gray-200 dark:bg-gray-700 rounded text-sm text-gray-600 dark:text-gray-300 font-mono text-center font-bold">
+                                        TCP / UDP
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mt-6 flex justify-end">
-                            <x-secondary-button x-on:click="$dispatch('close')">Cancel</x-secondary-button>
-                            <x-primary-button class="ml-3">Create</x-primary-button>
+                        <!-- Restart Policy -->
+                        <div class="mt-6">
+                            <h3 class="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-3">Restart Policy</h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="restart" value="no" class="peer sr-only" checked>
+                                    <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-3 text-center transition-all duration-200
+                                                peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 peer-checked:text-blue-700 dark:peer-checked:text-blue-300 peer-checked:shadow-sm
+                                                hover:bg-gray-50 dark:hover:bg-gray-800">
+                                        <div class="font-bold text-xs sm:text-sm">Never</div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="restart" value="always" class="peer sr-only">
+                                    <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-3 text-center transition-all duration-200
+                                                peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 peer-checked:text-blue-700 dark:peer-checked:text-blue-300 peer-checked:shadow-sm
+                                                hover:bg-gray-50 dark:hover:bg-gray-800">
+                                        <div class="font-bold text-xs sm:text-sm">Always</div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="restart" value="unless-stopped" class="peer sr-only">
+                                    <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-3 text-center transition-all duration-200
+                                                peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 peer-checked:text-blue-700 dark:peer-checked:text-blue-300 peer-checked:shadow-sm
+                                                hover:bg-gray-50 dark:hover:bg-gray-800">
+                                        <div class="font-bold text-xs sm:text-sm">Unless Stopped</div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="restart" value="on-failure" class="peer sr-only">
+                                    <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-3 text-center transition-all duration-200
+                                                peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 peer-checked:text-blue-700 dark:peer-checked:text-blue-300 peer-checked:shadow-sm
+                                                hover:bg-gray-50 dark:hover:bg-gray-800">
+                                        <div class="font-bold text-xs sm:text-sm">On Failure</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 bg-gray-50 dark:bg-gray-900/50 -mx-6 -mb-6 p-6 border-t border-gray-200 dark:border-gray-700">
+                            <button type="button" x-on:click="$dispatch('close')" class="w-full sm:w-auto px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0">
+                                Cancel
+                            </button>
+                            <button class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-2 px-6 rounded-md shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Deploy container
+                            </button>
                         </div>
                     </form>
                 </x-modal>

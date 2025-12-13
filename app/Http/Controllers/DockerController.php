@@ -47,12 +47,14 @@ class DockerController extends Controller
             'image' => 'required|string',
             'name' => 'nullable|string',
             'ports' => 'nullable|string|regex:/^\d+:\d+$/', // e.g. 8080:80
+            'restart' => 'nullable|in:no,always,unless-stopped,on-failure',
         ]);
 
         $result = $this->docker->create(
             $validated['image'],
             $validated['name'],
-            $validated['ports']
+            $validated['ports'],
+            $validated['restart'] ?? 'no'
         );
 
         if (isset($result['error'])) {

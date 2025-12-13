@@ -36,15 +36,16 @@ class DockerService
         }
     }
 
-    public function create(string $image, string $name = null, string $ports = null): array
+    public function create(string $image, string $name = null, string $ports = null, string $restart = 'no'): array
     {
         try {
-            // "image" "name" "ports"
+            // "image" "name" "ports" "restart"
             $args = [
                 'create',
                 $image,
                 $name ?: '_',
-                $ports ?: '_'
+                $ports ?: '_',
+                $restart ?: 'no'
             ];
             return $this->bridge->run('docker_manager.py', $args);
         } catch (\Exception $e) {

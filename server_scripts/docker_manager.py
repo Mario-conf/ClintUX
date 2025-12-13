@@ -34,7 +34,7 @@ def manage_container(action, container_id):
     except Exception as e:
         return {"error": str(e)}
 
-def create_container(image, name, ports):
+def create_container(image, name, ports, restart_policy):
     try:
         client = docker.from_env()
         
@@ -45,10 +45,14 @@ def create_container(image, name, ports):
             if len(parts) == 2:
                 port_bindings[f'{parts[1]}/tcp'] = int(parts[0])
         
+        # Restart Policy map
+        policy = {"Name": restart_policy} if restart_policy in ['always', 'unless-stopped', 'on-failure'] else None
+
         container = client.containers.run(
             image,
             name=name if name else None,
             ports=port_bindings,
+            restart_policy=policy,
             detach=True
         )
         return {"success": True, "message": f"Container created: {container.name} ({container.id[:10]})"}
@@ -60,11 +64,12 @@ if __name__ == "__main__":
         if sys.argv[1] == 'list':
             print(json.dumps(get_containers()))
         elif sys.argv[1] == 'create':
-            # create <image> <name> <ports>
+            # create <image> <name> <ports> <restart>
             image = sys.argv[2] if len(sys.argv) > 2 else None
             name = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] != "_" else None
             ports = sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] != "_" else None
-            print(json.dumps(create_container(image, name, ports)))
+            restart = sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] != "_" else "no"
+            print(json.dumps(create_container(image, name, ports, restart)))
         else:
             action = sys.argv[1]
             container_id = sys.argv[2] if len(sys.argv) > 2 else None
