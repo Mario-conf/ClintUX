@@ -38,6 +38,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Theme Switcher
+    Route::post('/theme-switch', function (\Illuminate\Http\Request $request) {
+        $theme = $request->input('theme');
+        session(['theme' => $theme]);
+
+        if (auth()->check()) {
+            auth()->user()->update(['theme' => $theme]);
+        }
+
+        return response()->json(['status' => 'success']);
+    })->name('theme.switch');
 });
 
 require __DIR__ . '/auth.php';

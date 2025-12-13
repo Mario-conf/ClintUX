@@ -1,100 +1,77 @@
-<x-admin-layout>
-    <!-- Page Header -->
-    <header class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-            <h1 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Application Management</h1>
-            <p class="mt-2 text-slate-500 dark:text-slate-400">Manage launcher applications, access controls, and integrations.</p>
-        </div>
-        <div class="flex gap-3">
-            <a href="{{ route('admin.apps.create') }}" class="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-black shadow-lg shadow-primary/20 hover:bg-[#e6e205] transition-all">
+<x-app-layout>
+    <x-admin.header
+        title="Application Management"
+        description="Manage your registered applications, configure proxies, and control access settings."
+        :breadcrumbs="['Apps' => '#']">
+        <x-slot:actions>
+            <a href="{{ route('admin.apps.create') }}" class="flex items-center justify-center gap-2 h-9 md:h-10 px-4 md:px-6 rounded-lg bg-primary text-[#181811] text-sm font-bold hover:brightness-105 active:scale-95 transition-all shadow-sm">
                 <span class="material-symbols-outlined text-[20px]">add</span>
-                New App
+                <span class="hidden sm:inline">New App</span>
+                <span class="sm:hidden">New</span>
             </a>
-        </div>
-    </header>
-
-    <!-- Search/Filter (Visual Only for now, connected to nothing) -->
-    <div class="mb-8 hidden">
-        <label class="relative flex w-full max-w-lg items-center">
-            <span class="absolute left-4 text-slate-400">
-                <span class="material-symbols-outlined">search</span>
-            </span>
-            <input class="h-12 w-full rounded-full border-0 bg-white pl-12 pr-4 text-sm font-medium text-slate-900 shadow-sm ring-1 ring-gray-200 placeholder:text-slate-400 focus:ring-2 focus:ring-primary dark:bg-card-dark dark:text-white dark:ring-white/10 dark:focus:ring-primary/50 transition-shadow" placeholder="Search applications..." type="text" />
-        </label>
-    </div>
+        </x-slot:actions>
+    </x-admin.header>
 
     @if(session('success'))
-    <div class="mb-6 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-4 text-green-800 dark:text-green-300 flex items-center gap-3">
-        <span class="material-symbols-outlined">check_circle</span>
+    <div class="mb-6 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-4 text-emerald-800 dark:text-emerald-300 flex items-center gap-3 text-sm font-medium">
+        <span class="material-symbols-outlined text-lg">check_circle</span>
         {{ session('success') }}
     </div>
     @endif
 
-    <!-- Table Section -->
-    <div class="mb-10 overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-card-dark">
-        <div class="overflow-x-auto">
-            <table class="w-full min-w-[800px] table-auto">
+    <!-- Data Display: Responsive -->
+    <div class="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl shadow-sm flex flex-col">
+        <!-- Desktop Table (Hidden on small screens) -->
+        <div class="hidden md:block overflow-x-auto">
+            <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-gray-100 bg-gray-50/50 dark:border-gray-800 dark:bg-white/5">
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Icon</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Application Name</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Destination URL</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Allowed Role</th>
-                        <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Actions</th>
+                    <tr class="bg-gray-50/50 dark:bg-white/5 border-b border-border-light dark:border-border-dark">
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Application</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">URL Destination</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Access Scope</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                <tbody class="divide-y divide-border-light dark:divide-border-dark">
                     @forelse($apps as $app)
-                    <tr class="group hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
+                    <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
                         <td class="px-6 py-4">
-                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-50 text-slate-600 dark:bg-slate-900/30 dark:text-slate-400">
-                                @if($app->icon)
-                                <i class="{{ $app->icon }} text-[24px]"></i>
-                                @else
-                                <span class="font-bold text-lg">{{ substr($app->name, 0, 1) }}</span>
-                                @endif
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center justify-center size-10 rounded-lg bg-primary/10 text-primary-dark border border-primary/20 shrink-0">
+                                    <span class="material-symbols-outlined">{{ $app->icon ?? 'apps' }}</span>
+                                </div>
+                                <div class="flex flex-col min-w-0">
+                                    <span class="font-bold text-sm text-slate-900 dark:text-white truncate">{{ $app->name }}</span>
+                                    <span class="text-xs text-slate-500 truncate max-w-[200px]">{{ $app->description }}</span>
+                                </div>
                             </div>
                         </td>
                         <td class="px-6 py-4">
-                            <div class="flex flex-col">
-                                <span class="font-bold text-slate-900 dark:text-white">{{ $app->name }}</span>
-                                <span class="text-xs text-slate-500 dark:text-slate-400">{{ Str::limit($app->description, 30) }}</span>
-                            </div>
+                            <a href="{{ $app->url }}" target="_blank" class="font-mono text-xs md:text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+                                {{ Str::limit($app->url, 30) }}
+                                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                            </a>
                         </td>
                         <td class="px-6 py-4">
-                            <div class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                                <span class="truncate max-w-[200px]">{{ $app->url }}</span>
-                                <button onclick="navigator.clipboard.writeText('{{ $app->url }}')" class="text-slate-400 hover:text-primary transition-colors" title="Copy URL">
-                                    <span class="material-symbols-outlined text-[16px]">content_copy</span>
-                                </button>
-                            </div>
+                            <x-ui.badge
+                                :color="$app->role->slug === 'admin' ? 'primary' : 'info'"
+                                :label="ucfirst($app->role->name)" />
                         </td>
                         <td class="px-6 py-4">
-                            @if($app->active)
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Active
-                            </span>
-                            @else
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-slate-500 dark:bg-white/10 dark:text-slate-400">
-                                <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span> Inactive
-                            </span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-white/10 dark:text-slate-300">
-                                {{ ucfirst($app->role ? $app->role->name : 'All') }}
-                            </span>
+                            <x-ui.badge
+                                :color="$app->active ? 'success' : 'neutral'"
+                                :label="$app->active ? 'Active' : 'Inactive'" />
                         </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <a href="{{ route('admin.apps.edit', $app->id) }}" class="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:bg-primary hover:text-black transition-all" title="Edit">
+                                <a href="{{ route('admin.apps.edit', $app->id) }}" class="size-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-primary/20 hover:text-primary-dark transition-colors">
                                     <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </a>
-                                <form action="{{ route('admin.apps.destroy', $app->id) }}" method="POST" onsubmit="return confirm('Delete this app?');" class="inline">
+                                <form action="{{ route('admin.apps.destroy', $app->id) }}" method="POST" onsubmit="return confirm('Delete app?');" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-all" title="Delete">
+                                    <button class="size-8 flex items-center justify-center rounded-lg bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 text-rose-600 transition-colors">
                                         <span class="material-symbols-outlined text-[18px]">delete</span>
                                     </button>
                                 </form>
@@ -103,19 +80,53 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-slate-500">
-                            No applications found. Click "New App" to add one.
-                        </td>
+                        <td colspan="5" class="px-6 py-12 text-center text-gray-500">No applications found.</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        <!-- Pagination -->
+
+        <!-- Mobile Stacked List (Visible on small screens) -->
+        <div class="md:hidden flex flex-col divide-y divide-border-light dark:divide-border-dark">
+            @forelse($apps as $app)
+            <div class="p-4 flex flex-col gap-3">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center justify-center size-10 rounded-lg bg-primary/10 text-primary-dark border border-primary/20 shrink-0">
+                            <span class="material-symbols-outlined">{{ $app->icon ?? 'apps' }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-slate-900 dark:text-white">{{ $app->name }}</span>
+                            <span class="text-xs text-slate-500">{{ Str::limit($app->description, 50) }}</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-1">
+                        <a href="{{ route('admin.apps.edit', $app->id) }}" class="p-2 text-gray-500 hover:text-primary">
+                            <span class="material-symbols-outlined text-[20px]">edit</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <a href="{{ $app->url }}" target="_blank" class="font-mono text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+                        {{ Str::limit($app->url, 25) }}
+                        <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                    </a>
+                    <div class="flex gap-2">
+                        <x-ui.badge :color="$app->role->slug === 'admin' ? 'primary' : 'info'" :label="ucfirst($app->role->name)" />
+                        <x-ui.badge :color="$app->active ? 'success' : 'neutral'" :label="$app->active ? 'Active' : 'Inactive'" />
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="p-8 text-center text-gray-500">No apps found.</div>
+            @endforelse
+        </div>
+
         @if($apps->hasPages())
-        <div class="flex items-center justify-between border-t border-gray-100 px-6 py-4 dark:border-gray-800">
+        <div class="p-4 border-t border-border-light dark:border-border-dark bg-gray-50 dark:bg-white/5">
             {{ $apps->links() }}
         </div>
         @endif
     </div>
-</x-admin-layout>
+</x-app-layout>
