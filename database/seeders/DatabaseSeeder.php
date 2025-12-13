@@ -15,11 +15,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create Roles
+        $adminRole = \App\Models\Role::firstOrCreate(
+            ['slug' => 'admin'],
+            ['name' => 'Admin', 'description' => 'Full control over the system']
+        );
 
+        $devRole = \App\Models\Role::firstOrCreate(
+            ['slug' => 'dev'],
+            ['name' => 'Developer', 'description' => 'Access to apps and logs']
+        );
+
+        $viewerRole = \App\Models\Role::firstOrCreate(
+            ['slug' => 'viewer'],
+            ['name' => 'Viewer', 'description' => 'Read-only access']
+        );
+
+        // Create Admin User
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('password'), // Ensure you change this!
+            'role_id' => $adminRole->id,
+            'active' => true,
         ]);
     }
 }

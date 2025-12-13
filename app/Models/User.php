@@ -21,7 +21,24 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
+        'active',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasRole(string $slug): bool
+    {
+        return $this->role && $this->role->slug === $slug;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
