@@ -1,0 +1,79 @@
+/* Premium UI Overrides */
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    
+    --dark-glass-bg: rgba(17, 24, 39, 0.75);
+    --dark-glass-border: rgba(255, 255, 255, 0.08);
+
+    --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+}
+
+.dark {
+    --glass-bg: var(--dark-glass-bg);
+    --glass-border: var(--dark-glass-border);
+}
+
+body {
+    background: #f3f4f6;
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.dark body {
+    background-color: #0f172a; /* Slate 900 */
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,0.4) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,20%,0.4) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,20%,0.4) 0, transparent 50%);
+}
+
+/* Glass Panel */
+.glass-panel, .bg-white.overflow-hidden, .bg-white.dark\:bg-gray-800 {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur( 12px ) !important;
+    -webkit-backdrop-filter: blur( 12px ) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--glass-shadow);
+}
+
+/* Card Hover */
+.hover\:shadow-md:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    border-color: rgba(167, 139, 250, 0.5) !important; /* purple-400 */
+}
+
+/* Gradient Text */
+.gradient-text {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Button Gradients */
+button[type="submit"].bg-primary, .x-primary-button {
+    background: var(--primary-gradient) !important;
+    border: none;
+    transition: filter 0.3s;
+}
+
+button[type="submit"]:hover {
+    filter: brightness(1.1);
+}
