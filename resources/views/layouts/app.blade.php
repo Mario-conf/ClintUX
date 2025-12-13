@@ -18,6 +18,13 @@
 
     <!-- Scripts -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -72,7 +79,7 @@
     <!-- Top Navigation Bar -->
     <header x-data="{ mobileMenuOpen: false }" class="sticky top-0 z-50 bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark px-6 py-4 shadow-sm relative">
         <div class="max-w-[1400px] mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-4 text-[#181811] dark:text-[#f9f506]">
+            <div class="flex items-center gap-4 text-[#181811] dark:text-white">
                 <!-- Logo -->
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-4 hover:opacity-80 transition-opacity">
                     <div class="size-8 text-primary">
@@ -96,12 +103,29 @@
                 <div class="flex items-center gap-3">
                     <!-- Theme Toggle -->
                     <button
-                        x-data="{ darkMode: localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches) }"
-                        x-init="$watch('darkMode', val => { 
-                            localStorage.setItem('theme', val ? 'dark' : 'light');
-                            if(val) document.documentElement.classList.add('dark');
-                            else document.documentElement.classList.remove('dark');
-                        })"
+                        x-data="{ 
+                            darkMode: '{{ Auth::user()?->theme }}' === 'dark' || ({{ Auth::check() ? 'false' : 'true' }} && (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)))
+                        }"
+                        x-init="
+                            if ('{{ Auth::user()?->theme }}' !== '') {
+                                darkMode = '{{ Auth::user()?->theme }}' === 'dark';
+                            }
+                            $watch('darkMode', val => { 
+                                const theme = val ? 'dark' : 'light';
+                                localStorage.setItem('theme', theme);
+                                if(val) document.documentElement.classList.add('dark');
+                                else document.documentElement.classList.remove('dark');
+                                
+                                fetch('{{ route('theme.switch') }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                    body: JSON.stringify({ theme: theme })
+                                });
+                            })
+                        "
                         @click="darkMode = !darkMode"
                         class="size-10 rounded-full flex items-center justify-center text-gray-400 hover:text-primary transition-colors bg-gray-50 dark:bg-white/5"
                         :title="darkMode ? 'Switch to Light' : 'Switch to Dark'">
@@ -119,15 +143,69 @@
                         </div>
                     </a>
 
-                    <!-- Logout -->
-                    <form method="POST" action="{{ route('logout') }}" class="ml-2">
+                    <!-- Logout (Desktop) -->
+                    <form method="POST" action="{{ route('logout') }}" class="ml-2 hidden md:block">
                         @csrf
                         <button type="submit" class="text-gray-400 hover:text-red-500" title="Logout">
                             <span class="material-symbols-outlined">logout</span>
                         </button>
                     </form>
+
+                    <!-- Mobile Hamburger -->
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-[#181811] dark:text-white p-2">
+                        <span class="material-symbols-outlined text-2xl" x-show="!mobileMenuOpen">menu</span>
+                        <span class="material-symbols-outlined text-2xl" x-show="mobileMenuOpen" style="display: none;">close</span>
+                    </button>
                 </div>
             </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div x-show="mobileMenuOpen"
+            style="display: none;"
+            class="absolute top-full left-0 w-full bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark shadow-lg md:hidden">
+            <nav class="flex flex-col p-4 space-y-2">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#181811] dark:text-white text-sm font-medium hover:bg-gray-100 dark:hover:bg-white/5 {{ request()->routeIs('dashboard') ? 'bg-gray-100 dark:bg-white/5 text-primary' : '' }}" href="{{ route('dashboard') }}">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+                @if(Auth::user()->isAdmin())
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#181811] dark:text-white text-sm font-medium hover:bg-gray-100 dark:hover:bg-white/5 {{ request()->routeIs('admin.apps.*') ? 'bg-gray-100 dark:bg-white/5 text-primary' : '' }}" href="{{ route('admin.apps.index') }}">
+                    <span class="material-symbols-outlined">apps</span>
+                    Apps
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#181811] dark:text-white text-sm font-medium hover:bg-gray-100 dark:hover:bg-white/5 {{ request()->routeIs('admin.users.*') ? 'bg-gray-100 dark:bg-white/5 text-primary' : '' }}" href="{{ route('admin.users.index') }}">
+                    <span class="material-symbols-outlined">group</span>
+                    Users
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#181811] dark:text-white text-sm font-medium hover:bg-gray-100 dark:hover:bg-white/5 {{ request()->routeIs('admin.audits.*') ? 'bg-gray-100 dark:bg-white/5 text-primary' : '' }}" href="{{ route('admin.audits.index') }}">
+                    <span class="material-symbols-outlined">history</span>
+                    Logs
+                </a>
+                @endif
+
+                <hr class="border-gray-200 dark:border-gray-700 my-2" />
+
+                <!-- Mobile Profile -->
+                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#181811] dark:text-white text-sm font-medium hover:bg-gray-100 dark:hover:bg-white/5">
+                    <div class="bg-center bg-no-repeat bg-cover rounded-full size-8 border border-border-light dark:border-border-dark flex items-center justify-center bg-surface-light text-primary font-bold text-xs">
+                        {{ substr(Auth::user()->name, 0, 1) }}
+                    </div>
+                    <div>
+                        <p class="font-bold">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Edit Profile</p>
+                    </div>
+                </a>
+
+                <!-- Mobile Logout -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-500 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-900/10">
+                        <span class="material-symbols-outlined">logout</span>
+                        Sign Out
+                    </button>
+                </form>
+            </nav>
         </div>
     </header>
 
