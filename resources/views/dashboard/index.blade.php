@@ -248,12 +248,12 @@
         </div>
         <div class="flex items-center gap-4">
             <!-- Reboot -->
-            <button x-data="" x-on:click="$dispatch('open-modal', 'confirm-reboot')" class="bg-primary hover:bg-[#e6e205] text-black px-6 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 transition-colors shadow-lg shadow-primary/20">
+            <button x-data="" x-on:click="$dispatch('open-modal', 'confirm-reboot')" class="bg-primary hover:bg-orange-600 text-white px-6 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 transition-colors shadow-lg shadow-primary/20">
                 <span class="material-symbols-outlined text-[20px]">restart_alt</span>
                 Reboot System
             </button>
             <!-- Shutdown -->
-            <button x-data="" x-on:click="$dispatch('open-modal', 'confirm-shutdown')" class="bg-[#181811] hover:bg-[#333] dark:bg-red-500/10 dark:hover:bg-red-500/20 dark:text-red-400 text-white dark:border dark:border-red-500/20 px-6 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 transition-colors">
+            <button x-data="" x-on:click="$dispatch('open-modal', 'confirm-shutdown')" class="bg-[#181811] hover:bg-gray-700 dark:bg-red-500/10 dark:hover:bg-red-500/20 dark:text-red-400 text-white dark:border dark:border-red-500/20 px-6 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 transition-colors">
                 <span class="material-symbols-outlined text-[20px]">power_settings_new</span>
                 Shutdown
             </button>

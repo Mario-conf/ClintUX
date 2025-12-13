@@ -77,7 +77,7 @@
                         <span class="text-primary">Enterprise Control</span>
                     </h1>
                     <p class="text-gray-300 text-lg xl:text-xl font-light leading-relaxed max-w-lg mb-8">
-                        Authenticate to access the centralized management dashboard. Monitor performance, manage users, and secure your infrastructure.
+                        Authenticate to access the centralized management platform. Monitor performance, manage users, and secure your infrastructure.
                     </p>
                     <div class="flex gap-8 border-t border-white/10 pt-8">
                         <div>

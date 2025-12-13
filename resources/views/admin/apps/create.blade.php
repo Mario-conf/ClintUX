@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-admin.header
         title="New Application"
-        description="Register a new internal or external application to be displayed on the dashboard."
+        description="Register a new internal or external application to be displayed on the platform."
         :breadcrumbs="['Apps' => route('admin.apps.index'), 'Create' => '#']">
         <x-slot:actions>
             <a href="{{ route('admin.apps.index') }}" class="flex items-center justify-center gap-2 h-9 md:h-10 px-4 md:px-6 rounded-lg border border-border-light dark:border-border-dark text-gray-600 dark:text-gray-300 text-sm font-bold hover:bg-gray-50 dark:hover:bg-white/5 transition-all">
@@ -24,7 +24,7 @@
                     <!-- Name -->
                     <div class="flex flex-col gap-2">
                         <label class="text-sm font-bold text-slate-900 dark:text-white">Application Name</label>
-                        <input name="name" value="{{ old('name') }}" type="text" class="w-full rounded-lg border border-border-light dark:border-border-dark bg-gray-50 dark:bg-black/20 p-2.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="e.g. Finance Dashboard" required />
+                        <input name="name" value="{{ old('name') }}" type="text" class="w-full rounded-lg border border-border-light dark:border-border-dark bg-gray-50 dark:bg-black/20 p-2.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="e.g. Finance App" required />
                         @error('name') <p class="text-red-500 text-xs font-medium">{{ $message }}</p> @enderror
                     </div>
 

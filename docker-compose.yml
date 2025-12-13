@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: dashboard-app
-    container_name: dashboard-app
+    container_name: ClintUX
     restart: unless-stopped
     working_dir: /var/www
     volumes:

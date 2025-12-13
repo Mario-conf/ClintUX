@@ -81,7 +81,7 @@
         <div class="max-w-[1400px] mx-auto flex items-center justify-between">
             <div class="flex items-center gap-4 text-[#181811] dark:text-white">
                 <!-- Logo -->
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-4 hover:opacity-80 transition-opacity">
+                <a href="{{ route('clintux') }}" class="flex items-center gap-4 hover:opacity-80 transition-opacity">
                     <div class="size-8 text-primary">
                         <svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <path d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z" fill="currentColor"></path>
@@ -93,7 +93,7 @@
             </div>
             <div class="flex items-center gap-8">
                 <nav class="hidden md:flex items-center gap-6">
-                    <a class="text-[#181811] dark:text-white text-sm {{ request()->routeIs('dashboard') ? 'font-bold border-b-2 border-primary' : 'font-medium opacity-70 hover:opacity-100 hover:text-primary' }} leading-normal py-1 transition-all" href="{{ route('dashboard') }}">Dashboard</a>
+                    <a class="text-[#181811] dark:text-white text-sm {{ request()->routeIs('clintux') ? 'font-bold border-b-2 border-primary' : 'font-medium opacity-70 hover:opacity-100 hover:text-primary' }} leading-normal py-1 transition-all" href="{{ route('clintux') }}">ClintUX</a>
                     @if(Auth::user()->isAdmin())
                     <a class="text-[#181811] dark:text-white text-sm {{ request()->routeIs('admin.apps.*') ? 'font-bold border-b-2 border-primary' : 'font-medium opacity-70 hover:opacity-100 hover:text-primary' }} leading-normal py-1 transition-all" href="{{ route('admin.apps.index') }}">Apps</a>
                     <a class="text-[#181811] dark:text-white text-sm {{ request()->routeIs('admin.users.*') ? 'font-bold border-b-2 border-primary' : 'font-medium opacity-70 hover:opacity-100 hover:text-primary' }} leading-normal py-1 transition-all" href="{{ route('admin.users.index') }}">Users</a>
@@ -165,9 +165,9 @@
             style="display: none;"
             class="absolute top-full left-0 w-full bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark shadow-lg md:hidden">
             <nav class="flex flex-col p-4 space-y-2">
-                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#181811] dark:text-white text-sm font-medium hover:bg-gray-100 dark:hover:bg-white/5 {{ request()->routeIs('dashboard') ? 'bg-gray-100 dark:bg-white/5 text-primary' : '' }}" href="{{ route('dashboard') }}">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#181811] dark:text-white text-sm font-medium hover:bg-gray-100 dark:hover:bg-white/5 {{ request()->routeIs('clintux') ? 'bg-gray-100 dark:bg-white/5 text-primary' : '' }}" href="{{ route('clintux') }}">
                     <span class="material-symbols-outlined">dashboard</span>
-                    Dashboard
+                    ClintUX
                 </a>
                 @if(Auth::user()->isAdmin())
                 <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#181811] dark:text-white text-sm font-medium hover:bg-gray-100 dark:hover:bg-white/5 {{ request()->routeIs('admin.apps.*') ? 'bg-gray-100 dark:bg-white/5 text-primary' : '' }}" href="{{ route('admin.apps.index') }}">
