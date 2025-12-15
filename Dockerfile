@@ -39,12 +39,17 @@ COPY . .
 COPY docker/nginx/default.conf /etc/nginx/sites-enabled/default
 
 
+RUN composer install --no-interaction --optimize-autoloader --no-dev
+
+
+RUN npm install
+RUN npm run build
+
 RUN chown -R www-data:www-data /var/www
 
 
 COPY docker/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
-
 
 EXPOSE 80
 
