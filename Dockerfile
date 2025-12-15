@@ -18,6 +18,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
+
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd opcache
 
 
@@ -28,7 +32,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 
 WORKDIR /var/www
-
 
 COPY . .
 
