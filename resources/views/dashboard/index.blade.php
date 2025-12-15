@@ -240,7 +240,7 @@
     @if(auth()->user()->isAdmin())
     <footer class="mt-8 pt-8 border-t border-border-light dark:border-border-dark flex flex-col md:flex-row justify-between items-center gap-4 pb-8">
         <div class="text-sm text-gray-500 dark:text-gray-400 text-center md:text-left">
-            <p>System Version: v2.4.1</p>
+            <p>System Version: v2.4.3</p>
             <p>Last login: {{ now()->format('M d, H:i') }}</p>
         </div>
         <div class="flex items-center gap-4">
