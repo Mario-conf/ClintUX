@@ -39,7 +39,7 @@ COPY . .
 COPY docker/nginx/default.conf /etc/nginx/sites-enabled/default
 
 
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN composer install --no-interaction --optimize-autoloader 
 
 
 RUN npm install
