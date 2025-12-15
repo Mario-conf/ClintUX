@@ -1,4 +1,4 @@
-# ClintUX | System Version: v2.4.1
+# ClintUX | Ultimate Server Dashboard 
 
 The ultimate centralized management interface for server infrastructure, Docker containers, and self-hosted applications. Built for simplicity, security, and premium aesthetics.
 
