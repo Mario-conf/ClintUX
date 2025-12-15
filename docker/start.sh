@@ -22,9 +22,11 @@ if [ ! -f database/database.sqlite ]; then
 fi
 
 php artisan migrate --force
-
 php artisan optimize:clear
-
 chmod -R 777 storage bootstrap/cache
 
-php-fpm
+echo "Iniciando PHP-FPM..."
+php-fpm -D
+
+echo "Iniciando Nginx..."
+nginx -g "daemon off;"
