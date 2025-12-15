@@ -144,10 +144,7 @@
         <div class="flex items-center justify-between">
             <h3 class="text-[#181811] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">Docker Containers</h3>
             @if(auth()->user()->isAdmin() || auth()->user()->hasRole('dev'))
-            <button x-data="" x-on:click="$dispatch('open-modal', 'create-container')" class="bg-primary hover:bg-[#e6e205] text-black px-5 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors">
-                <span class="material-symbols-outlined text-lg">add</span>
-                Create
-            </button>
+            
             @endif
         </div>
         <div class="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark shadow-sm overflow-hidden">
